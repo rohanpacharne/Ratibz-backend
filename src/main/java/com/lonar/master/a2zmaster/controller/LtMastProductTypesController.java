@@ -77,12 +77,14 @@ public class LtMastProductTypesController {
 	 public ResponseEntity< Status> getAllSupplierList(
 	     @RequestBody LtMastSuppliers ltMastSuppliers ,
 	     @RequestParam(required = false, defaultValue = "0") int start,
-	     @RequestParam(required = false, defaultValue = "10") int length
+	     @RequestParam(required = false, defaultValue = "10") int length,
+	     @RequestParam(required = false, defaultValue = "1") int columnNo
 	 ) {
 	     LtMastSuppliers input = new LtMastSuppliers();
 //	     input.setPinCode(pinCode);
 	     input.setStart(start);
 	     input.setLength(length);
+	     input.setColumnNo(columnNo);
 	     return new ResponseEntity<Status> (ltMastProductTypesService.getAllSupplierList(ltMastSuppliers,input),HttpStatus.OK);
 	 }
 

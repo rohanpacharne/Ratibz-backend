@@ -95,7 +95,7 @@ public class LtCustomerSubsServiceImpl implements LtCustomerSubsService, CodeMas
 				  LtSupplierDeliveryTimings  deliveryTimings =  ltSupplierDeliveryTimingsDao.getDeliveryTiming(customerSubs.getSupplierId()
 						                          , customerSubs.getDeliveryTime());
 				  status =  this.validateTime(deliveryTimings, customerSubs.getStartDate(),customerSubs.getSubscriptionType());
-				  System.out.println("in time limi validation = "+status);
+				  System.out.println("in time limit validation = "+status);
 				  return status;
 			}
 			return status;
@@ -143,13 +143,19 @@ public class LtCustomerSubsServiceImpl implements LtCustomerSubsService, CodeMas
 				}
 				
 				Date deliveryDate = dateFormat.parse(strStartDate+" "+deliveryTimings.getFromTime());
+				System.out.println("deliveryDate = "+deliveryDate);
+				System.out.println("deliveryDate.getTime() = "+deliveryDate.getTime());
+				System.out.println("UtilsMaster.getCurrentDateTime().getTime() = "+UtilsMaster.getCurrentDateTime().getTime());
 				Long diffInMiliSecond = deliveryDate.getTime() - UtilsMaster.getCurrentDateTime().getTime();
+				System.out.println("diffInMiliSecond = "+diffInMiliSecond);
 				Long timeDiffInMinutes = TimeUnit.MILLISECONDS.toMinutes(diffInMiliSecond);
+				System.out.println("timeDiffInMinutes = "+timeDiffInMinutes);
 				
 				Long  timeLimit  = 0L;
 				if(deliveryTimings.getTimeLimit() != null ) {
 					timeLimit = Long.parseLong(deliveryTimings.getTimeLimit());
 				}
+				System.out.println("timeLimit = "+timeLimit);
 				System.out.println("above if");
 				if( timeDiffInMinutes < timeLimit ) {
 					System.out.println("in if...");
@@ -160,18 +166,20 @@ public class LtCustomerSubsServiceImpl implements LtCustomerSubsService, CodeMas
 //					return status;
 				}
 			}else {
+				System.out.println("in else");
 				status = ltMastCommonMessageService.getCodeAndMessage(FAIL);
 				
 			}
+			status.setCode(200);
+			status.setMessage("SUCCESS");
+//			System.out.println("status = "+status);
 			return status;
 		}catch(Exception e) {
 			e.printStackTrace();
 			status = ltMastCommonMessageService.getCodeAndMessage(EXCEPTION);
 			return status;
 		}
-//		status.setCode(1);
-//		status.setMessage("SUCCESS");
-//		System.out.println("status = "+status);
+		
 	}
 	
 //	@Override
@@ -254,8 +262,7 @@ public class LtCustomerSubsServiceImpl implements LtCustomerSubsService, CodeMas
 	@Override
 	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
 	public Status save(LtCustomerSubs customerSubs, LtMastUsers user) throws ServiceException, ParseException {
-	    Status status = null;        
-
+	    Status status = null;
 		try {
 	    
 	    System.out.println("Fetching last login ID for user: " + user.getUserId());
@@ -299,6 +306,7 @@ public class LtCustomerSubsServiceImpl implements LtCustomerSubsService, CodeMas
 	    }
 	    
 	    if (customerSubs.getSubsId() != null) {
+	    	System.out.println("sub id = "+customerSubs.getSubsId());
 	        System.out.println("Subscription saved successfully. Returning success status.");
 	        status = ltMastCommonMessageService.getCodeAndMessage(INSERT_SUCCESSFULLY);
 	        status.setMessage("Order Placed!  Supplier's approval pending.");

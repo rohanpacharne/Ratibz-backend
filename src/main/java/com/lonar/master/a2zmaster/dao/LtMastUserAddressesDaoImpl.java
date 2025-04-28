@@ -1,6 +1,7 @@
 package com.lonar.master.a2zmaster.dao;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +39,6 @@ public class LtMastUserAddressesDaoImpl implements LtMastUserAddressesDao,CodeMa
 
 	
 	public LtMastUserAddresses save(LtMastUserAddresses addresses)throws ServiceException  {
-			
 		return addressesRepository.save(addresses);
 	}
 	
@@ -49,14 +49,10 @@ public class LtMastUserAddressesDaoImpl implements LtMastUserAddressesDao,CodeMa
 		LtMastUserAddresses update = null;
 		
 		if(addressesRepository.existsById(updatedAddress.getUserAddressId())) {
-			
-			 update= addressesRepository.save(updatedAddress);	
+			update= addressesRepository.save(updatedAddress);	
 		}else {
-			System.out.println("null");
 			update=null;
 		}
-		
-		
 		return update;
     }
 	
@@ -64,13 +60,20 @@ public class LtMastUserAddressesDaoImpl implements LtMastUserAddressesDao,CodeMa
 		
 	public Status deleteAddress(Long userAddressId) {
 		
-		Status status=new Status();
-		if(!userAddressId.equals(null)) {
-			
-			addressesRepository.deleteById(userAddressId);
-			status=ltMastCommonMessageService.getCodeAndMessage(DELETE_SUCCESSFULLY);
-		}
-		return status;
+		Status status = new Status();
+
+	    if (userAddressId != null) {
+	        if (addressesRepository.existsById(userAddressId)) {
+	            addressesRepository.deleteById(userAddressId);
+	            status = ltMastCommonMessageService.getCodeAndMessage(DELETE_SUCCESSFULLY);
+	        } else {
+	            status = ltMastCommonMessageService.getCodeAndMessage(RECORD_NOT_FOUND);
+	        }
+	    } else {
+	        status = ltMastCommonMessageService.getCodeAndMessage(INVALID_INPUT);
+	    }
+
+	    return status;
 	}
 	
 	
@@ -93,14 +96,13 @@ public class LtMastUserAddressesDaoImpl implements LtMastUserAddressesDao,CodeMa
 	        return new ArrayList<>();
 	    }
 	}
-
-	
-	
-	
 	
 	public List<LtMastUserAddresses> getAllAddresses() {
-		
+		try {
 		return addressesRepository.findAll();
+		}catch(Exception ex) {
+			return new ArrayList<LtMastUserAddresses>();
+		}
     }
 
 

@@ -1,5 +1,6 @@
 package com.lonar.master.a2zmaster.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,14 +25,26 @@ public class LtMastUserAddressesServiceImpl implements LtMastUserAddressesServic
 	@Override
 	public Status save(LtMastUserAddresses addresses) throws ServiceException {
 		
-		Status status=new Status();
-		
-		status.setData(addressesDao.save(addresses));
-		
-		if(!status.equals(null)) {
-			status=ltMastCommonMessageService.getCodeAndMessage(INSERT_SUCCESSFULLY);
-		}
-		return status;
+		Status status = new Status();
+
+	    Date now = new Date();
+	    Long userId = addresses.getUserId();
+
+	    addresses.setCreatedBy(userId);
+	    addresses.setCreationDate(now);
+	    addresses.setLastUpdateDate(now);
+	    addresses.setLastUpdateLogin(userId);
+
+	    LtMastUserAddresses savedAddress = addressesDao.save(addresses);
+
+	    if (savedAddress != null) {
+	        status = ltMastCommonMessageService.getCodeAndMessage(INSERT_SUCCESSFULLY);
+	        status.setData(savedAddress);
+	    } else {
+	        status = ltMastCommonMessageService.getCodeAndMessage(INSERT_FAIL);
+	    }
+
+	    return status;
 	}
 	
 	
@@ -40,17 +53,20 @@ public class LtMastUserAddressesServiceImpl implements LtMastUserAddressesServic
 		Status status=new Status();
 		
 		try {
-		
+		updatedAddress.setLastUpdatedBy(updatedAddress.getUserId()); // Assuming getUserId() returns the updater's ID
+	    updatedAddress.setLastUpdateDate(new Date());
+	    updatedAddress.setLastUpdateLogin(updatedAddress.getUserId());
 		LtMastUserAddresses result = addressesDao.updateAddress(updatedAddress);
 
 		if(result != null) {
 			status=ltMastCommonMessageService.getCodeAndMessage(UPDATE_SUCCESSFULLY);
+			status.setData(result);
 		}else {
 			status=ltMastCommonMessageService.getCodeAndMessage(UPDATE_FAIL);
 		}
-		 status.setData(result);
+		 
 		}catch(Exception ex) {
-			
+			status = ltMastCommonMessageService.getCodeAndMessage(EXCEPTION);
 		}
 		return status;
 		
@@ -59,7 +75,6 @@ public class LtMastUserAddressesServiceImpl implements LtMastUserAddressesServic
 
 	@Override
 	public Status deleteAddress(Long userAddressId) {
-		
 		return addressesDao.deleteAddress(userAddressId);
 	}
 
@@ -67,31 +82,37 @@ public class LtMastUserAddressesServiceImpl implements LtMastUserAddressesServic
 	@Override
 	public Status getAddressById(Long userId) {
 		
-		Status status=new Status();
-		
-		status.setData(addressesDao.getAddressById(userId));
-		if(!status.equals(null)) {
-			status.setCode(1);
-			status.setMessage("success");
-		}
-		return status;
+		    Status status = new Status();
+
+		    List<LtMastUserAddresses> addressList = (List<LtMastUserAddresses>) addressesDao.getAddressById(userId);
+		   
+		    if (addressList != null && !addressList.isEmpty()) {
+		        status = ltMastCommonMessageService.getCodeAndMessage(DATA_FETCHED_SUCCESSFULLY);
+		        status.setData(addressList);
+		    } else {
+		        status = ltMastCommonMessageService.getCodeAndMessage(ERROR_FETCHING_DATA);
+		    }
+
+		    return status;
+
 	}
 
 
 	@Override
 	public Status getAllAddresses() {
 		
-		Status status=new Status();
-		
-		 status.setData(addressesDao.getAllAddresses()) ;
-		
-		if(status !=null) {
-			
-			status.setCode(1);
-			status.setMessage("success");
-		}
-		
-		return status;
+		Status status = new Status();
+
+	    List<LtMastUserAddresses> addressList = (List<LtMastUserAddresses>) addressesDao.getAllAddresses();
+	   
+	    if (addressList != null && !addressList.isEmpty()) {
+	        status = ltMastCommonMessageService.getCodeAndMessage(DATA_FETCHED_SUCCESSFULLY);
+	        status.setData(addressList);
+	    } else {
+	        status = ltMastCommonMessageService.getCodeAndMessage(ERROR_FETCHING_DATA);
+	    }
+
+	    return status;
 	}
 	
 	 

@@ -22,7 +22,7 @@ public class LtMastProductTypesServiceImpl implements LtMastProductTypesService,
 	LtMastProductTypesDao ltMastProductTypesDao;
 	
 	@Autowired
-	LtMastCommonMessageService commonMessageService;
+	LtMastCommonMessageService ltMastCommonMessageService;
 
 
 	@Override
@@ -60,17 +60,20 @@ public class LtMastProductTypesServiceImpl implements LtMastProductTypesService,
 		
 		Status status =new Status();
 		
-			status.setData(ltMastProductTypesDao.getAllSupplierList(ltMastSuppliers,input));
-			
-			if(status != null) {
-				
-				status.setCode(1);
-				status.setMessage("success");
-			}else {
-				
-				status.setMessage("null");
-			}
-			
+		try {
+		
+			List<LtMastSuppliers> list = ltMastProductTypesDao.getAllSupplierList(ltMastSuppliers,input);
+		
+				if(list!=null && !list.isEmpty()) {
+					status = ltMastCommonMessageService.getCodeAndMessage(DATA_FETCHED_SUCCESSFULLY);
+					status.setData(list);
+				}else {
+					status = ltMastCommonMessageService.getCodeAndMessage(ERROR_FETCHING_DATA);
+				}
+			}catch(Exception ex) {
+				ex.printStackTrace();
+				status = ltMastCommonMessageService.getCodeAndMessage(EXCEPTION);
+		}
 		return status;
 	}
 	

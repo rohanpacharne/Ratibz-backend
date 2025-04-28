@@ -73,14 +73,22 @@ public class LtMastProductTypesDaoImpl implements LtMastProductTypesDao {
 		 System.out.println("input:"+input);
 		 
 		  int start = (input.getStart() != null) ? input.getStart() : 0;
-		    int length = (input.getLength() != null) ? input.getLength() : 10;
-		 
+		  int length = (input.getLength() != null) ? input.getLength() : 10;
+		    
+		    if (input.getColumnNo() == null || input.getColumnNo() == 1) {
+			    input.setColumnNo(1);
+			} else if (input.getColumnNo() == 0) {
+			    input.setColumnNo(0);
+			}
+		    
 		 String sqlQuery = env.getProperty("getAllSupplierList");
 		 List<LtMastSuppliers> list=   jdbcTemplate.query(sqlQuery, new Object[]{ltMastSuppliers.getPinCode().toString(),
 				 													ltMastSuppliers.getMastProdTypeId(),
 				 													ltMastSuppliers.getMastProdTypeId(),
+				 													input.getColumnNo(),input.getColumnNo(),
 				 													length,start}, 
 				 new BeanPropertyRowMapper<LtMastSuppliers>(LtMastSuppliers.class));
+		 System.out.println("list " +list);
 		 return list;
 	}
 

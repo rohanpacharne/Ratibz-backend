@@ -71,11 +71,19 @@ public class LtProductsDaoImpl implements LtProductsDao {
 	@Override
 	public List<LtProducts> getLtProductsDataTable(LtProducts input, Long supplierId) throws ServiceException {
 		
-		if (input.getSort() == null) {
-			input.setSort("desc");
-		}
-		if (input.getColumnNo() == null || input.getColumnNo() == 0) {
-			input.setColumnNo(1);
+//		if (input.getSort() == null) {
+//			input.setSort("desc");
+//		}
+//		if (input.getColumnNo() == null || input.getColumnNo() == 0) {
+//			input.setColumnNo(1);
+//		}
+		
+		if (input.getColumnNo() == null || input.getColumnNo() == 1) {
+			  
+		    input.setColumnNo(1);
+		} else if (input.getColumnNo() == 0) {
+		   
+		    input.setColumnNo(0);
 		}
 
 		String name = null;
@@ -86,7 +94,7 @@ public class LtProductsDaoImpl implements LtProductsDao {
 		String query = env.getProperty("getLtProductsDataTable");
 
 		return (List<LtProducts>) jdbcTemplate.query(query,
-				new Object[] { supplierId, name, input.getColumnNo(), input.getLength(), input.getStart() },
+				new Object[] { supplierId, name, input.getColumnNo(),input.getColumnNo(), input.getLength(), input.getStart() },
 				new BeanPropertyRowMapper<LtProducts>(LtProducts.class));
 	}
 

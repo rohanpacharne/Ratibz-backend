@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "LT_MAST_USER_ADDRESSES")
@@ -74,6 +75,15 @@ public class LtMastUserAddresses {
     
     @Column(name = "EMAIL")
     private String email;
+    
+    @Transient
+    private String area;
+    
+    @Transient
+    private String city;
+    
+    @Transient
+    private String state;
 
 	public Long getUserAddressId() {
 		return userAddressId;
@@ -235,6 +245,30 @@ public class LtMastUserAddresses {
 		this.email = email;
 	}
 
+	public String getArea() {
+		return area;
+	}
+
+	public void setArea(String area) {
+		this.area = area;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
 	@Override
 	public String toString() {
 		return "LtMastUserAddresses [userAddressId=" + userAddressId + ", userId=" + userId + ", addressType="
@@ -242,8 +276,8 @@ public class LtMastUserAddresses {
 				+ ", pinCode=" + pinCode + ", landMark=" + landMark + ", areaId=" + areaId + ", stateId=" + stateId
 				+ ", cityId=" + cityId + ", primaryAddress=" + primaryAddress + ", createdBy=" + createdBy
 				+ ", creationDate=" + creationDate + ", lastUpdateDate=" + lastUpdateDate + ", lastUpdatedBy="
-				+ lastUpdatedBy + ", lastUpdateLogin=" + lastUpdateLogin + ", mobile=" + mobile + ", alternatNo="
-				+ alternateNo + ", email=" + email + "]";
+				+ lastUpdatedBy + ", lastUpdateLogin=" + lastUpdateLogin + ", mobile=" + mobile + ", alternateNo="
+				+ alternateNo + ", email=" + email + ", area=" + area + ", city=" + city + ", state=" + state + "]";
 	}
     
     

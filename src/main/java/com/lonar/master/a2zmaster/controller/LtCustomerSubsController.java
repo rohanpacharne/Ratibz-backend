@@ -3,6 +3,7 @@ package com.lonar.master.a2zmaster.controller;
 import java.rmi.ServerException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -51,6 +52,7 @@ import com.lonar.master.a2zmaster.repository.LtMastSupplierRepositoty;
 import com.lonar.master.a2zmaster.repository.LtMastUsersRepository;
 import com.lonar.master.a2zmaster.repository.LtUpiResponseRepository;
 import com.lonar.master.a2zmaster.service.LtCustomerSubsService;
+import com.lonar.master.a2zmaster.service.LtMastCommonMessageService;
 import com.lonar.master.a2zmaster.service.LtOrderHistoryService;
 
 @RestController
@@ -63,6 +65,9 @@ public class LtCustomerSubsController implements CodeMaster {
 	@Autowired private LtOrderHistoryService orderHistoryService;
 	@Autowired
 	LtMastUsersRepository ltMastUsersRepository;
+	
+	@Autowired
+	LtMastCommonMessageService ltMastCommonMessageService;
 	
 	
 
@@ -104,57 +109,195 @@ public class LtCustomerSubsController implements CodeMaster {
 	
 
 	
+//	@RequestMapping(value = "/save", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+//	public ResponseEntity<Status> save(@RequestBody LtCustomerSubs ltCustomerSubs) throws ServerException {
+//	    try {
+//	        System.out.println("Received request to save subscription: " + ltCustomerSubs);
+//
+//	        // Find user by ID
+//	        System.out.println("Searching for user with ID: " + ltCustomerSubs.getUserId());
+//	        Optional<LtMastUsers> userOptional = ltMastUsersRepository.findById(ltCustomerSubs.getUserId());
+//	        if (!userOptional.isPresent()) {
+//	            System.out.println("User not found with ID: " + ltCustomerSubs.getUserId());
+//	            // throw new BusinessException("User not found with ID: " + ltCustomerSubs.getUserId());
+//	        }
+//	        LtMastUsers user = userOptional.get();
+//	        System.out.println("User found: " + user);
+//
+//	        // Check user type
+//	        if (user.getUserType().equals("SUPPLIER")) {
+//	            System.out.println("User is a SUPPLIER. Setting status to ACTIVE.");
+//	            ltCustomerSubs.setStatus(ACTIVE);
+//
+//	            // Check subscription type
+//	            if (ltCustomerSubs.getSubscriptionType().equalsIgnoreCase("ONCE")) {
+//	                System.out.println("Subscription type is ONCE. Checking supplier details.");
+//	                
+//	                Optional<LtMastSuppliers> optional = mastSupplierRepositoty.findById(user.getSupplierId());
+//	                if (optional.isPresent()) {
+//	                    LtMastSuppliers mastSuppliers = optional.get();
+//	                    System.out.println("Supplier found: " + mastSuppliers);
+//
+//	                    // Check if supplier is prepaid
+//	                    if (mastSuppliers.getIsPrepaid() != null && mastSuppliers.getIsPrepaid().equalsIgnoreCase("PDO")) {
+//	                        System.out.println("Supplier is PDO prepaid. Processing PDO subscription.");
+//	                        return ltCustomerSubsService.savePDOSubscription(ltCustomerSubs, user, mastSuppliers);
+//	                    }
+//	                    
+//	                } else {
+//	                    System.out.println("Supplier not found for ID: " + user.getSupplierId());
+//	                }
+//	            }
+//	            System.out.println("Updating customer subscription.");
+//	            return new ResponseEntity<>(ltCustomerSubsService.update(ltCustomerSubs, user), HttpStatus.OK);
+//	        } else {
+//	            System.out.println("User is not a SUPPLIER. Saving customer subscription.");
+//	            ltCustomerSubs.setStatus(PENDING);
+//	            return new ResponseEntity<>(ltCustomerSubsService.save(ltCustomerSubs, user), HttpStatus.OK);
+//	        }
+//	    } catch (Exception e) {
+//	        System.out.println("Exception occurred: " + e.getMessage());
+//	        e.printStackTrace();
+//	        throw new BusinessException(0, null, e);
+//	    }
+//	}
+	
+//	@RequestMapping(value = "/save", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+//	public ResponseEntity<Status> save(@RequestBody List<LtCustomerSubs> ltCustomerSubsList) throws ServerException {
+//		Status status = new Status();
+//	    try {
+////	    	System.out.println("in for loop");
+//	    	for(LtCustomerSubs ltCustomerSubs: ltCustomerSubsList) {
+//	        System.out.println("Received request to save subscription: " + ltCustomerSubs);
+//
+//	        // Find user by ID
+//	        System.out.println("Searching for user with ID: " + ltCustomerSubs.getUserId());
+//	        Optional<LtMastUsers> userOptional = ltMastUsersRepository.findById(ltCustomerSubs.getUserId());
+//	        if (!userOptional.isPresent()) {
+//	            System.out.println("User not found with ID: " + ltCustomerSubs.getUserId());
+//	            // throw new BusinessException("User not found with ID: " + ltCustomerSubs.getUserId());
+//	        }
+//	        LtMastUsers user = userOptional.get();
+//	        System.out.println("User found: " + user);
+//
+//	        // Check user type
+//	        if (user.getUserType().equals("SUPPLIER")) {
+//	            System.out.println("User is a SUPPLIER. Setting status to ACTIVE.");
+//	            ltCustomerSubs.setStatus(ACTIVE);
+//
+//	            // Check subscription type
+//	            if (ltCustomerSubs.getSubscriptionType().equalsIgnoreCase("ONCE")) {
+//	                System.out.println("Subscription type is ONCE. Checking supplier details.");
+//	                
+//	                Optional<LtMastSuppliers> optional = mastSupplierRepositoty.findById(user.getSupplierId());
+//	                if (optional.isPresent()) {
+//	                    LtMastSuppliers mastSuppliers = optional.get();
+//	                    System.out.println("Supplier found: " + mastSuppliers);
+//
+//	                    // Check if supplier is prepaid
+//	                    if (mastSuppliers.getIsPrepaid() != null && mastSuppliers.getIsPrepaid().equalsIgnoreCase("PDO")) {
+//	                        System.out.println("Supplier is PDO prepaid. Processing PDO subscription.");
+//	                        return ltCustomerSubsService.savePDOSubscription(ltCustomerSubs, user, mastSuppliers);
+//	                    }
+//	                    
+//	                } else {
+//	                    System.out.println("Supplier not found for ID: " + user.getSupplierId());
+//	                }
+//	            }
+//	            System.out.println("Updating customer subscription.");
+////	            return new ResponseEntity<>(ltCustomerSubsService.update(ltCustomerSubs, user), HttpStatus.OK);
+//	            ltCustomerSubsService.update(ltCustomerSubs, user);
+//	        } else {
+//	            System.out.println("User is not a SUPPLIER. Saving customer subscription.");
+////	            return new ResponseEntity<>(ltCustomerSubsService.save(ltCustomerSubs, user), HttpStatus.OK);
+//	            ltCustomerSubsService.save(ltCustomerSubs, user);
+//	        }
+//	    	}
+//	    	status = ltMastCommonMessageService.getCodeAndMessage(INSERT_SUCCESSFULLY);
+//	    	System.out.println("status === "+status);
+//	    	return new ResponseEntity<>(status, HttpStatus.OK);
+//
+//	    	
+//	    } catch (Exception e) {
+//	        System.out.println("Exception occurred: " + e.getMessage());
+//	        e.printStackTrace();
+//	        throw new BusinessException(0, null, e);
+//	    }
+//	}
+	
 	@RequestMapping(value = "/save", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Status> save(@RequestBody LtCustomerSubs ltCustomerSubs) throws ServerException {
+	public ResponseEntity<Status> save(@RequestBody List<LtCustomerSubs> ltCustomerSubsList) throws ServerException {
+	    Status status = new Status();
+	    List<String> errors = new ArrayList<>();
+
 	    try {
-	        System.out.println("Received request to save subscription: " + ltCustomerSubs);
+	        // Iterate through each subscription in the list
+	        for(LtCustomerSubs ltCustomerSubs: ltCustomerSubsList) {
+	            System.out.println("Received request to save subscription: " + ltCustomerSubs);
 
-	        // Find user by ID
-	        System.out.println("Searching for user with ID: " + ltCustomerSubs.getUserId());
-	        Optional<LtMastUsers> userOptional = ltMastUsersRepository.findById(ltCustomerSubs.getUserId());
-	        if (!userOptional.isPresent()) {
-	            System.out.println("User not found with ID: " + ltCustomerSubs.getUserId());
-	            // throw new BusinessException("User not found with ID: " + ltCustomerSubs.getUserId());
-	        }
-	        LtMastUsers user = userOptional.get();
-	        System.out.println("User found: " + user);
-
-	        // Check user type
-	        if (user.getUserType().equals("SUPPLIER")) {
-	            System.out.println("User is a SUPPLIER. Setting status to ACTIVE.");
-	            ltCustomerSubs.setStatus(ACTIVE);
-
-	            // Check subscription type
-	            if (ltCustomerSubs.getSubscriptionType().equalsIgnoreCase("ONCE")) {
-	                System.out.println("Subscription type is ONCE. Checking supplier details.");
-	                
-	                Optional<LtMastSuppliers> optional = mastSupplierRepositoty.findById(user.getSupplierId());
-	                if (optional.isPresent()) {
-	                    LtMastSuppliers mastSuppliers = optional.get();
-	                    System.out.println("Supplier found: " + mastSuppliers);
-
-	                    // Check if supplier is prepaid
-	                    if (mastSuppliers.getIsPrepaid() != null && mastSuppliers.getIsPrepaid().equalsIgnoreCase("PDO")) {
-	                        System.out.println("Supplier is PDO prepaid. Processing PDO subscription.");
-	                        return ltCustomerSubsService.savePDOSubscription(ltCustomerSubs, user, mastSuppliers);
-	                    }
-	                    
-	                } else {
-	                    System.out.println("Supplier not found for ID: " + user.getSupplierId());
-	                }
+	            // Find user by ID
+	            System.out.println("Searching for user with ID: " + ltCustomerSubs.getUserId());
+	            Optional<LtMastUsers> userOptional = ltMastUsersRepository.findById(ltCustomerSubs.getUserId());
+	            if (!userOptional.isPresent()) {
+	                errors.add("User not found with ID: " + ltCustomerSubs.getUserId());
+	                continue; // Skip to the next subscription
 	            }
-	            System.out.println("Updating customer subscription.");
-	            return new ResponseEntity<>(ltCustomerSubsService.update(ltCustomerSubs, user), HttpStatus.OK);
-	        } else {
-	            System.out.println("User is not a SUPPLIER. Saving customer subscription.");
-	            return new ResponseEntity<>(ltCustomerSubsService.save(ltCustomerSubs, user), HttpStatus.OK);
+	            LtMastUsers user = userOptional.get();
+	            System.out.println("User found: " + user);
+
+	            // Check user type
+	            if ("SUPPLIER".equals(user.getUserType())) {
+	                System.out.println("User is a SUPPLIER. Setting status to ACTIVE.");
+	                ltCustomerSubs.setStatus(ACTIVE);
+
+	                // Check subscription type
+	                if ("ONCE".equalsIgnoreCase(ltCustomerSubs.getSubscriptionType())) {
+	                    System.out.println("Subscription type is ONCE. Checking supplier details.");
+
+	                    Optional<LtMastSuppliers> optional = mastSupplierRepositoty.findById(user.getSupplierId());
+	                    if (optional.isPresent()) {
+	                        LtMastSuppliers mastSuppliers = optional.get();
+	                        System.out.println("Supplier found: " + mastSuppliers);
+
+	                        // Check if supplier is prepaid
+	                        if ("PDO".equalsIgnoreCase(mastSuppliers.getIsPrepaid())) {
+	                            System.out.println("Supplier is PDO prepaid. Processing PDO subscription.");
+	                            // Process PDO subscription without returning early
+	                            ltCustomerSubsService.savePDOSubscription(ltCustomerSubs, user, mastSuppliers);
+	                        }
+	                    } else {
+	                        errors.add("Supplier not found for ID: " + user.getSupplierId());
+	                    }
+	                }
+	                // Updating customer subscription
+	                System.out.println("Updating customer subscription.");
+	                ltCustomerSubsService.update(ltCustomerSubs, user);
+	            } else {
+	                // Save customer subscription if user is not a supplier
+	                System.out.println("User is not a SUPPLIER. Saving customer subscription.");
+	                ltCustomerSubsService.save(ltCustomerSubs, user);
+	            }
 	        }
+
+	        // After processing all, check if there were errors
+	        if (!errors.isEmpty()) {
+	            status = ltMastCommonMessageService.getCodeAndMessage(FAIL);
+	            status.setMessage(String.join(", ", errors));
+	            return new ResponseEntity<>(status, HttpStatus.BAD_REQUEST);
+	        }
+
+	        // If no errors, return success message
+	        status = ltMastCommonMessageService.getCodeAndMessage(INSERT_SUCCESSFULLY);
+	        return new ResponseEntity<>(status, HttpStatus.OK);
+
 	    } catch (Exception e) {
 	        System.out.println("Exception occurred: " + e.getMessage());
 	        e.printStackTrace();
-	        throw new BusinessException(0, null, e);
+	        status = ltMastCommonMessageService.getCodeAndMessage(EXCEPTION);
+	        return new ResponseEntity<>(status, HttpStatus.INTERNAL_SERVER_ERROR);
 	    }
 	}
+
 
 	
 	

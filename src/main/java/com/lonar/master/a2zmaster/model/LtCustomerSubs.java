@@ -89,6 +89,10 @@ public class LtCustomerSubs extends BaseClass{
 	@Column(name = "BILLING_CYCLE")
 	private String billingCycle;
 	
+	
+	@Column(name = "USER_ADDRESS_ID")
+	private Long userAddressId;
+	
 	@Transient
 	private String productName;
 	
@@ -545,6 +549,14 @@ public class LtCustomerSubs extends BaseClass{
 		this.imagePath = imagePath;
 	}
 
+	public Long getUserAddressId() {
+		return userAddressId;
+	}
+
+	public void setUserAddressId(Long userAddressId) {
+		this.userAddressId = userAddressId;
+	}
+
 	@Override
 	public String toString() {
 		return "LtCustomerSubs [subsId=" + subsId + ", supplierId=" + supplierId + ", userId=" + userId + ", productId="
@@ -553,17 +565,20 @@ public class LtCustomerSubs extends BaseClass{
 				+ ", sunday=" + sunday + ", monday=" + monday + ", tuesday=" + tuesday + ", wednesday=" + wednesday
 				+ ", thursday=" + thursday + ", friday=" + friday + ", saturday=" + saturday + ", alternateDay="
 				+ alternateDay + ", subsDeliveryDate=" + subsDeliveryDate + ", offerId=" + offerId + ", invoiceCycle="
-				+ invoiceCycle + ", billingCycle=" + billingCycle + ", productName=" + productName + ", deliveryDate="
-				+ deliveryDate + ", delDate=" + delDate + ", productImage=" + productImage + ", productUom="
-				+ productUom + ", userName=" + userName + ", offerCode=" + offerCode + ", subsDays=" + subsDays
-				+ ", vacationStartDate=" + vacationStartDate + ", vacationEndDate=" + vacationEndDate + ", vacationId="
-				+ vacationId + ", txnId=" + txnId + ", txnRef=" + txnRef + ", responseCode=" + responseCode
-				+ ", productDesc=" + productDesc + ", payAmount=" + payAmount + ", payMode=" + payMode + ", txnStatus="
-				+ txnStatus + ", payPartnerName=" + payPartnerName + ", mobileNumber=" + mobileNumber
-				+ ", customerAddress=" + customerAddress + ", showTime=" + showTime + ", invoiceId=" + invoiceId
-				+ ", isEditable=" + isEditable + ", walletBalance=" + walletBalance + ", imagePath=" + imagePath
-				+ ", customerSubsDeliveries=" + customerSubsDeliveries + "]";
+				+ invoiceCycle + ", billingCycle=" + billingCycle + ", userAddressId=" + userAddressId
+				+ ", productName=" + productName + ", deliveryDate=" + deliveryDate + ", delDate=" + delDate
+				+ ", productImage=" + productImage + ", productUom=" + productUom + ", userName=" + userName
+				+ ", offerCode=" + offerCode + ", subsDays=" + subsDays + ", vacationStartDate=" + vacationStartDate
+				+ ", vacationEndDate=" + vacationEndDate + ", vacationId=" + vacationId + ", txnId=" + txnId
+				+ ", txnRef=" + txnRef + ", responseCode=" + responseCode + ", productDesc=" + productDesc
+				+ ", payAmount=" + payAmount + ", payMode=" + payMode + ", txnStatus=" + txnStatus + ", payPartnerName="
+				+ payPartnerName + ", mobileNumber=" + mobileNumber + ", customerAddress=" + customerAddress
+				+ ", showTime=" + showTime + ", invoiceId=" + invoiceId + ", isEditable=" + isEditable
+				+ ", walletBalance=" + walletBalance + ", imagePath=" + imagePath + ", customerSubsDeliveries="
+				+ customerSubsDeliveries + "]";
 	}
+
+	
 	
 	
 }

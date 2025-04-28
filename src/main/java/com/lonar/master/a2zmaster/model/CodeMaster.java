@@ -39,6 +39,11 @@ public interface CodeMaster {
 	public static final String FILE_UPLOAD_FAIL = "FILE_UPLOAD_FAIL"; 
 	public static final String NO_DIRECTIVE_EXISTS = "NO_DIRECTIVE_EXISTS"; 
 	public static final String SUBMIT_FOR_APPROVAL = "SUBMIT_FOR_APPROVAL"; 
+	public static final String DATA_FETCHED_SUCCESSFULLY = "DATA_FETCHED_SUCCESSFULLY"; 
+	public static final String ERROR_FETCHING_DATA = "ERROR_FETCHING_DATA"; 
+	public static final String RECORD_NOT_FOUND = "RECORD_NOT_FOUND";
+	public static final String INVALID_INPUT = "INVALID_INPUT";
+
 	
 
 	public static final String EXCEPTION = "EXCEPTION"; // Exception

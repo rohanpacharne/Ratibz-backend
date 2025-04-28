@@ -27,7 +27,6 @@ public class LtMastUserAddressesController {
 	
 	@PostMapping("/save")
 	public  Status save(@RequestBody LtMastUserAddresses addresses) throws ServiceException {
-		
 		return addressesService.save(addresses);
 	}
 	
@@ -38,7 +37,6 @@ public class LtMastUserAddressesController {
 	
 	@DeleteMapping("/delete/{userAddressId}")
     public Status delete(@PathVariable Long userAddressId) {
-		
 		return addressesService.deleteAddress(userAddressId);
     }
 	
@@ -50,7 +48,6 @@ public class LtMastUserAddressesController {
 	
 	 @GetMapping("/getAllAddresses")
 	 public Status getAllAddresses() {
-		 
 	     return addressesService.getAllAddresses();
 	 }
 
